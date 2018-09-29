@@ -83,7 +83,7 @@ class StoresQuery {
 
   /**
    * Returns only stores in the given country.
-   * Countries are specified using to letter codes,
+   * Countries are specified using ISO 3166-1 alpha-2,
    * DK for denmark, SE for Sweden etc.
    *
    * @param {string} country Country code to get stores for.
