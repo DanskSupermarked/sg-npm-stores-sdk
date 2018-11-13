@@ -4,16 +4,21 @@ Salling Group owns Netto, Føtex, Bilka, Salling, and more.
 Through this SDK you will be able to find the name, opening hours, address, and more of stores.
 The requests are made through the Salling Group API which can be found [here](https://developer.sallinggroup.com/).
 
-You will need the module `sg-base-sdk` in order to authenticate.
+This SDK uses the [Traverser library](https://www.npmjs.com/package/@salling-group/pagination-traverser).
+
 You can get your credentials through the [developer portal](https://developer.sallinggroup.com/).
 
 ## Getting Started.
 The following example gets names of all Netto stores in the ZIP code 8200.
 You will need to get a JWT secret or Bearer token with access to the Stores API from the [developer portal](https://developer.sallinggroup.com/). 
 ```js
-const { SallingGroupAPI } = require('sg-base-sdk');
-const StoresSDK = require('sg-stores-sdk');
-const instance = new StoresSDK(SallingGroupAPI.bearer('my_token'));
+const Stores = require('@salling-group/stores');
+const instance = new Stores({
+  'auth': {
+    'token': 'my_token',
+    'type': 'bearer',
+  },
+});
 
 const traverser = instance.beginQuery()
     .ofBrand('netto')
@@ -32,15 +37,30 @@ This prints:
 ```
 
 ## Documentation
-### `constructor(api)`
+### `constructor(options)`
 This initializes a new Stores SDK object.
-`api` must be an instance returned by `sg-base-sdk`.
+`options` must be an object containing an `auth` object with the following contract:
+
+|Property|Value|Required|Description|
+|--------|-----|--------|-----------|
+|`type`|`'jwt'` or `'bearer'`|Yes|The authentication type. This is either a JWT or a Bearer Token.|
+|`token`|`String`|If `type` is `'bearer'`.|The token associared with the bearer token credentials.|
+|`email`|`String`|If `type` is `'jwt'`.|The email associated with the JWT credentials.|
+|`secret`|`String`|If `type` is `'jwt'`.|The secret associated with the JWT credentials.|
+
+`applicationName` should be set in the `options` object, but this is optional.
+(This value will be sent in the UserAgent during requests.)
 
 Example:
 ```js
-const { SallingGroupAPI } = require('sg-base-sdk');
-const StoresSDK = require('sg-stores-sdk');
-const instance = new StoresSDK(SallingGroupAPI.jwt('my_email', 'my_key'));
+const Stores = require('@salling-group/stores');
+const instance = new Stores({
+  'auth': {
+    'issuer': 'my_issuer',
+    'secret': 'my_secret',
+    'type': 'jwt',
+  },
+});
 ```
 
 ### `get(storeID)`
@@ -73,7 +93,7 @@ This should be followed by a chain of these commands:
 |`nearCoordinate(long, lat, radius)`|Returns stores in the given radius (in kilometers) around the coordinates.|`.nearCoordinate(56.18,10.20,0.5)`|
 
 The chain should be ended with `.execute()`.
-This will return a `Traverser` for the query.
+This will return a `Traverser` for the query. (See [this](https://www.npmjs.com/package/@salling-group/pagination-traverser) for more information about `Traverser`.)
 
 Example:
 ```js
@@ -86,6 +106,6 @@ const traverser = instance.beginQuery()
 const page = await traverser.get();
 ```
 ### `query(params = {})`
-This queries the Stores API directly and returns a `Traverser`. 
+This queries the Stores API directly and returns a [Traverser](https://www.npmjs.com/package/@salling-group/pagination-traverser). 
 `params` is the search parameters.
 This is mostly used internally.

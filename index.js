@@ -1,4 +1,6 @@
-const { Traverser } = require('sg-base-sdk');
+const { createInstance } = require('@salling-group/auth');
+const Traverser = require('@salling-group/pagination-traverser');
+const pkg = require('./package');
 
 /**
  * A query builder for querying stores.
@@ -6,7 +8,7 @@ const { Traverser } = require('sg-base-sdk');
 class StoresQuery {
   /**
    * Constructs a new query builder.
-   * @param {Index} storesAPI A handle to Index.
+   * @param {StoresSDK} storesAPI A handle to Index.
    */
   constructor(storesAPI) {
     this.storesAPI = storesAPI;
@@ -109,13 +111,16 @@ const BASE_URL = '/v1/stores/';
 /**
  * Wraps the Salling Group Stores API.
  */
-class Index {
+class StoresSDK {
   /**
    * Initializes a new Stores API wrapper.
-   * @param {Object} api A SallingGroupAPI instance.
+   * @param {Object} options A SallingGroupAPI instance.
    */
-  constructor(api) {
-    this.api = api;
+  constructor(options) {
+    this.instance = createInstance({
+      ...options,
+      'baseName': `Stores SDK v${pkg.version}`,
+    });
   }
 
   /**
@@ -126,7 +131,7 @@ class Index {
    */
   async get(storeID) {
     try {
-      const result = await this.api.get(`${BASE_URL}${storeID}`);
+      const result = await this.instance.get(`${BASE_URL}${storeID}`);
       return result.data;
     } catch (error) {
       if (error.statusCode === 404) {
@@ -143,7 +148,7 @@ class Index {
    * @returns {Traverser} A traverser to use for iteration over the stores.
    */
   query(params = {}) {
-    return new Traverser(this.api, BASE_URL, { params });
+    return new Traverser(this.instance, BASE_URL, { params });
   }
 
   /**
@@ -165,4 +170,4 @@ class Index {
   }
 }
 
-module.exports = Index;
+module.exports = StoresSDK;
