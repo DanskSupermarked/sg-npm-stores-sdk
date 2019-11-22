@@ -10,7 +10,7 @@ You can get your credentials through the [developer portal](https://developer.sa
 
 ## Getting Started.
 The following example gets names of all Netto stores in the ZIP code 8200.
-You will need to get a JWT secret or Bearer token with access to the Stores API from the [developer portal](https://developer.sallinggroup.com/). 
+You will need to get a JWT secret or Bearer token with access to the Stores API from the [developer portal](https://developer.sallinggroup.com/).
 ```js
 const Stores = require('@salling-group/stores');
 const instance = new Stores({
@@ -27,7 +27,7 @@ const traverser = instance.beginQuery()
     .execute();
 
 traverser.get().then((page) => console.log(page));
-``` 
+```
 This prints:
 ```json
 [
@@ -45,7 +45,7 @@ This initializes a new Stores SDK object.
 |--------|-----|--------|-----------|
 |`type`|`'jwt'` or `'bearer'`|Yes|The authentication type. This is either a JWT or a Bearer Token.|
 |`token`|`String`|If `type` is `'bearer'`.|The token associared with the bearer token credentials.|
-|`email`|`String`|If `type` is `'jwt'`.|The email associated with the JWT credentials.|
+|`issuer`|`String`|If `type` is `'jwt'`.|The issuer associated with the JWT credentials.|
 |`secret`|`String`|If `type` is `'jwt'`.|The secret associated with the JWT credentials.|
 
 `applicationName` should be set in the `options` object, but this is optional.
@@ -106,6 +106,6 @@ const traverser = instance.beginQuery()
 const page = await traverser.get();
 ```
 ### `query(params = {})`
-This queries the Stores API directly and returns a [Traverser](https://www.npmjs.com/package/@salling-group/pagination-traverser). 
+This queries the Stores API directly and returns a [Traverser](https://www.npmjs.com/package/@salling-group/pagination-traverser).
 `params` is the search parameters.
 This is mostly used internally.
